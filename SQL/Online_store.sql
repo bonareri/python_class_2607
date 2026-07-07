@@ -1,16 +1,15 @@
-DROP database onlinestore;
+DROP database retailstore;
 
-CREATE DATABASE onlinestore;
+CREATE DATABASE retailstore;
 
-USE onlinestore;
+USE  retailstore;
 
-CREATE TABLE Customers (
-    CustomerID INT PRIMARY KEY,
+CREATE TABLE  Customers(
+	CustomerID INT PRIMARY KEY,
     FirstName VARCHAR(50) NOT NULL,
     LastName VARCHAR(50) NOT NULL,
-    Email VARCHAR(100) UNIQUE NOT NULL,
-    Phone VARCHAR(15),
-    RegistrationDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+	Email VARCHAR(70) UNIQUE NOT NULL,
+	Phone VARCHAR(15)
 );
 
 ALTER TABLE Customers
@@ -27,54 +26,31 @@ VALUES
 ('Peter',   'Kiptoo',    'peter.kiptoo@email.com',    '0778901234'),
 ('Mercy',   'Njeri',     'mercy.njeri@email.com',     '0789012345'),
 ('Samuel',  'Wekesa',    'samuel.wekesa@email.com',   '0790123456'),
-('Cynthia', 'Mutheu',    'cynthia.mutheu@email.com',  '0701234567'),
-('Melody',  'Bonareri',  'melodybonareri@gmail.com',  '0727125056');
+('Cynthia', 'Mutheu',    'cynthia.mutheu@email.com',  '0701234567');
 
 SELECT * FROM Customers;
 
-DESCRIBE Customers;
-
-## Making changes to the structure
-## Change a column definition - allow longer phone numbers
+# Making changes to the structure
 ALTER TABLE Customers
 MODIFY Phone VARCHAR(20);
 
-## Add a new column - add customer status
+DESCRIBE Customers;
+
 ALTER TABLE Customers
 ADD Status VARCHAR(20) DEFAULT 'Active';
 
-## Remove a column
 ALTER TABLE Customers
 DROP COLUMN Status;
 
-## Rename a column  - rename Phone - PhoneNumber
-ALTER TABLE Customers
-RENAME COLUMN Phone TO PhoneNumber;
-
-## Drop UNIQUE constraint
-ALTER TABLE Customers
-DROP INDEX Email;
-
-## Add UNIQUE constraint
-ALTER TABLE Customers
-ADD CONSTRAINT uq_customers_email UNIQUE (Email);
-
-## Update existing data after schema change
-UPDATE Customers
-SET LastName = 'Kamau'
-WHERE CustomerID = 1;
-
-CREATE TABLE Products (
-    ProductID INT PRIMARY KEY,
+CREATE TABLE Products(
+	ProductID INT PRIMARY KEY,
     ProductName VARCHAR(100) NOT NULL,
-    Category VARCHAR(50),
-    Price DECIMAL(10,2) CHECK (Price >= 0),
-    Stock INT NOT NULL CHECK (Stock >= 0)
+	Category VARCHAR(50) NOT NULL,
+	Price DECIMAL (10, 2) CHECK (Price >= 0),
+	Stock INT NOT NULL CHECK (Stock >= 0)
 );
 
-# Insert sample data
-
-INSERT INTO Products (ProductID, ProductName, Category, Price, Stock)
+INSERT INTO Products(ProductID, ProductName, Category, Price, Stock)
 VALUES
 (1, 'Laptop',        'Electronics', 1189.99, 8),
 (2, 'Smartphone',    'Electronics', 799.50, 30),
@@ -88,35 +64,29 @@ VALUES
 (10,'Table Lamp',    'Furniture',   47.25,  25),
 (11,'Dish Washer',   'Kitchen',     220.00, 15);
 
-# Update structure
-ALTER TABLE Products
-MODIFY ProductID INT AUTO_INCREMENT;
-
-# Add a “CreatedAt” column to track when products are added:
-ALTER TABLE Products
-ADD CreatedAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP;
-
-# Add UNIQUE constraint on ProductName per category:
-ALTER TABLE Products
-ADD CONSTRAINT uq_product UNIQUE (ProductName, Category);
-
-DESCRIBE Products;
 SELECT * FROM Products;
 
-CREATE TABLE Orders (
-    OrderID INT PRIMARY KEY AUTO_INCREMENT,
-    CustomerID INT NOT NULL,
-    OrderDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    Status VARCHAR(20) DEFAULT 'Pending',
+ALTER TABLE Products
+MODIFY ProductID INT auto_increment;
 
+ALTER TABLE Products
+ADD CreatedAT DATETIME NOT NULL DEFAULT current_timestamp;
+
+DESCRIBE Products;
+
+CREATE TABLE Orders(
+	OrderID INT PRIMARY KEY auto_increment,
+    CustomerID INT NOT NULL,
+	OrderDate DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+	Status VARCHAR(20) DEFAULT 'Pending',
+	
     FOREIGN KEY (CustomerID)
-        REFERENCES Customers(CustomerID)
+		REFERENCES Customers(CustomerID)
         ON DELETE CASCADE
 );
 
-INSERT INTO Orders (CustomerID, Status)
+INSERT INTO Orders(CustomerID, Status)
 VALUES
-(1, 'Completed'),
 (2, 'Shipped'),
 (3, 'Completed'),
 (1, 'Completed'),
@@ -128,3 +98,327 @@ VALUES
 (10, 'Completed');
 
 SELECT * FROM Orders;
+
+CREATE TABLE OrderDetails (
+	OrderDetailID INT PRIMARY KEY AUTO_INCREMENT,
+	OrderID INT NOT NULL,
+	ProductID INT NOT NULL,	
+	Quantity INT NOT NULL CHECK (Quantity > 0),
+	UnitPrice DECIMAL(10, 2) NOT NULL CHECK (UnitPrice >= 0 ),
+	
+    FOREIGN KEY (OrderID)
+		REFERENCES Orders(OrderID)
+        ON DELETE CASCADE,
+        
+	FOREIGN KEY (ProductID)
+		REFERENCES Products(ProductID)
+        ON DELETE CASCADE
+);
+
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity, UnitPrice)
+VALUES
+-- Order 1 HIgh value orders
+-- (1, 1, 1, 1189.99),
+-- (1, 7, 1, 62.40),
+-- (1, 3, 2, 145.75),
+
+-- Order 2 (electronics bundle - slight discount)
+(2, 2, 1, 780.00),
+(2, 8, 1, 295.00),
+
+-- Order 3 (bulk stationery - realistic office/student purchase)
+(3, 5, 20, 3.00),
+(3, 6, 50, 1.00),
+
+-- Order 4 (furniture combo)
+(4, 4, 1, 210.00),
+(4, 10, 1, 45.00),
+
+-- Order 5 (small household purchase)
+(5, 9, 4, 10.50),
+(5, 5, 6, 3.25),
+
+-- Order 6 (bulk pens - typical Kenyan office/school buying)
+(6, 6, 100, 1.00),
+
+-- Order 7 (accessories focused)
+(7, 7, 2, 60.00),
+(7, 3, 1, 145.75),
+
+-- Order 8 (premium electronics order)
+(8, 1, 1, 1150.00),
+(8, 8, 1, 300.00),
+
+-- Order 9 (very small budget order)
+(9, 9, 2, 11.80);
+
+
+SELECT * FROM OrderDetails;
+
+# Selecting specific columns
+# only the names and the emails
+
+SELECT FirstName, LastName, Email FROM Customers;
+
+SELECT * FROM Customers
+WHERE Email = 'faith.akinyi@email.com';
+
+# Find the products that cost more than 
+SELECT * FROM Products
+WHERE Price > 150;
+
+# Show the products that cost more than 500 and the stock being less than 20
+SELECT * FROM Products
+WHERE Price > 500 AND Stock < 20;
+
+# Show the products that are in the electronics and cost more than 500 or the stock is less than 20
+SELECT * FROM Products
+WHERE (Category = 'Electronics' AND Price > 500) OR Stock < 20;
+
+# Order BY CLAUSE
+-- Sorting the products by the price
+SELECT * FROM Products
+ORDER BY Price ASC;
+
+# Limiting the rows
+-- Show the 2 most expensive products
+SELECT * FROM Products
+ORDER BY Price DESC
+LIMIT 2;
+
+SELECT * FROM Products
+ORDER BY Price ASC
+LIMIT 2;
+
+# Using DISCTINCT
+-- List all the unique products categories
+SELECT DISTINCT Category FROM Products;
+
+# Show products that are in Electronics and cost more than 500 OR the stock is less than 20 and sort this in descing order
+SELECT * FROM Products
+WHERE (Category = 'Electronics' AND Price > 500 ) OR Stock < 20
+ORDER BY Price DESC;
+
+# UPDATE 
+SELECT * FROM Customers;
+
+-- Updating a customer's phone number
+UPDATE Customers
+SET Phone = '0722222233'
+WHERE CustomerID = 2;
+
+# Updating multiple columns
+UPDATE Customers
+SET FirstName = 'Melody', Email = 'melodybonareri@gmail.com'
+WHERE CustomerID = 2;
+
+# We want to increase the price of all the Electronics by 10%
+UPDATE Products
+SET Price = Price * 1.10
+WHERE Category = 'Electronics';
+
+SELECT * FROM Products
+WHERE Category = 'Electronics';
+
+# Temporarirly disable safe mode
+SET SQL_SAFE_UPDATES = 0;
+
+# Re-enable the SAFE MODE
+SET SQL_SAFE_UPDATES = 1;
+
+
+# Deleting a single record
+SELECT * FROM Products
+WHERE Category = 'Accessories';
+
+DELETE FROM Products
+WHERE ProductID = 1;
+
+# Delete multiple rows
+DELETE FROM Products
+WHERE Category = 'Accessories';
+
+# SQL Aggregate functions
+-- Total number of customers
+SELECT COUNT(*) AS TotalCustomers FROM Customers;
+
+# Total value of all the orders
+SELECT * FROM OrderDetails;
+
+SELECT SUM(Quantity * UnitPrice) AS TotalSales FROM OrderDetails;
+
+# Average price of the products
+SELECT AVG(Price) AS AveragePrice FROM Products;
+
+# Let's find the cheapest product and most expensive products
+SELECT MIN(Price) AS CheapestPrice , MAX(Price) AS MostExpensiveProducts
+FROM Products;
+
+# Using Joins
+# INNER JOIN
+# Let's find all the orders along with the customers
+SELECT 
+	c.CustomerID,
+    c.FirstName,
+    c.LastName,
+    o.OrderID,
+    o.OrderDate,
+    o.Status
+FROM Customers c
+RIGHT JOIN Orders o
+	ON c.CustomerID = o.CustomerID;
+    
+SELECT * FROM Orders;
+SELECT * FROM OrderDetails;
+
+-- OrderID, OrderDate -- Orders
+-- ProductID, Quantity, UnitPrice - OrderDetails
+
+# Orders + OrderDetails
+SELECT 
+	o.OrderID,
+    o.OrderDate,
+    d.ProductID,
+    d.Quantity,
+    d.UnitPrice
+FROM Orders o
+INNER JOIN OrderDetails d
+	ON o.OrderID = d.OrderID;
+    
+# Full Sales view (Orders + Products)
+SELECT
+	o.OrderID,
+    p.ProductName,
+    p.Category,
+    od.Quantity,
+    od.UnitPrice,
+    (od.Quantity * od.UnitPrice) AS SubTotal
+FROM OrderDetails od
+INNER JOIN products p
+	ON od.ProductID = p.ProductID
+INNER JOIN Orders o
+	ON od.OrderID = o.OrderID;
+    
+# ProductID, ProductName - products
+# Quantity - OrderDetails
+SELECT
+	p.ProductID,
+    p.ProductName,
+    od.Quantity
+FROM Products p
+LEFT JOIN OrderDetails od
+	ON p.ProductID = od.ProductID; 
+    
+# Using Group BY
+-- Total spending per customer
+SELECT 
+	o.CustomerID,
+    SUM(od.Quantity * od.UnitPrice) AS TotalSpent
+FROM Orders o
+JOIN OrderDetails od 
+	ON o.OrderID = od.OrderID
+GROUP BY o.CustomerID
+ORDER BY TotalSpent DESC;
+
+-- Customers who spent more than 200
+-- CustomerID, - Orders
+-- FirstName - Customers
+-- Total spent - Quantity, UnitPrice - OrderDetails
+SELECT 
+	o.CustomerID,
+    c.FirstName,
+    SUM(od.Quantity * od.UnitPrice) AS TotalSpent
+FROM Orders o
+JOIN OrderDetails od 
+	ON o.OrderID = od.OrderID
+JOIN Customers c
+	ON o.CustomerID = c.CustomerID
+GROUP BY o.CustomerID, c.FirstName
+HAVING SUM(od.Quantity * od.UnitPrice) > 200;
+
+
+# best selling products
+-- Product Name - Products
+-- ProductID - OrderDetails
+-- Total Quantity - OrderDetails
+-- Total Quantity >= 5
+
+# Case When 
+# Classify the orders into (LOW, MEDIUM and HIGH)
+SELECT 
+	o.OrderID,
+    SUM(od.Quantity * od.UnitPrice) AS TotalAmount,
+	CASE
+		WHEN SUM(od.Quantity * od.UnitPrice) >= 1000 THEN 'High Value'
+		WHEN SUM(od.Quantity * od.UnitPrice) >= 300 THEN 'Medium Value'
+		ELSE 'Low Value'
+	END AS OrderCategory
+FROM Orders o
+JOIN OrderDetails od 
+	ON o.OrderID = od.OrderID
+GROUP BY o.OrderID
+ORDER BY OrderCategory;
+
+# Classify the customers by spending
+SELECT
+	o.CustomerID,
+    SUM(od.Quantity * od.UnitPrice) AS TotalSpent,
+	CASE
+		WHEN SUM(od.Quantity * od.UnitPrice) >= 1000 THEN 'VIP Customer'
+		WHEN SUM(od.Quantity * od.UnitPrice) >= 200 THEN 'Regular Customer'
+		ELSE 'Low Spender'
+	END AS CustomerSegment
+FROM Orders o
+JOIN OrderDetails od 
+	ON o.OrderID = od.OrderID
+GROUP BY o.CustomerID
+ORDER BY CustomerSegment DESC;
+
+# Stock status
+SELECT
+	ProductName,
+    Stock,
+    CASE
+		WHEN Stock = 0 THEN 'Out of Stock'
+        WHEN Stock <= 15 THEN 'Low Stock'
+        WHEN Stock < 50 THEN 'Medium stock'
+        ELSE 'Well Stocked'
+	END AS StockStatus
+FROM Products
+ORDER BY StockStatus;
+
+
+
+
+
+
+
+
+
+
+
+    
+    
+    
+    
+    
+    
+    
+
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
