@@ -155,32 +155,32 @@ VALUES
 
 SELECT * FROM OrderDetails;
 
-# Selecting specific columns
-# only the names and the emails
+-- Selecting specific columns
+-- only the names and the emails
 
 SELECT FirstName, LastName, Email FROM Customers;
 
 SELECT * FROM Customers
 WHERE Email = 'faith.akinyi@email.com';
 
-# Find the products that cost more than 
+-- Find the products that cost more than 
 SELECT * FROM Products
 WHERE Price > 150;
 
-# Show the products that cost more than 500 and the stock being less than 20
+-- Show the products that cost more than 500 and the stock being less than 20
 SELECT * FROM Products
 WHERE Price > 500 AND Stock < 20;
 
-# Show the products that are in the electronics and cost more than 500 or the stock is less than 20
+-- Show the products that are in the electronics and cost more than 500 or the stock is less than 20
 SELECT * FROM Products
 WHERE (Category = 'Electronics' AND Price > 500) OR Stock < 20;
 
-# Order BY CLAUSE
+-- Order BY CLAUSE
 -- Sorting the products by the price
 SELECT * FROM Products
 ORDER BY Price ASC;
 
-# Limiting the rows
+-- Limiting the rows
 -- Show the 2 most expensive products
 SELECT * FROM Products
 ORDER BY Price DESC
@@ -190,16 +190,16 @@ SELECT * FROM Products
 ORDER BY Price ASC
 LIMIT 2;
 
-# Using DISCTINCT
+-- Using DISCTINCT
 -- List all the unique products categories
 SELECT DISTINCT Category FROM Products;
 
-# Show products that are in Electronics and cost more than 500 OR the stock is less than 20 and sort this in descing order
+-- Show products that are in Electronics and cost more than 500 OR the stock is less than 20 and sort this in descing order
 SELECT * FROM Products
 WHERE (Category = 'Electronics' AND Price > 500 ) OR Stock < 20
 ORDER BY Price DESC;
 
-# UPDATE 
+-- UPDATE 
 SELECT * FROM Customers;
 
 -- Updating a customer's phone number
@@ -207,12 +207,12 @@ UPDATE Customers
 SET Phone = '0722222233'
 WHERE CustomerID = 2;
 
-# Updating multiple columns
+-- Updating multiple columns
 UPDATE Customers
 SET FirstName = 'Melody', Email = 'melodybonareri@gmail.com'
 WHERE CustomerID = 2;
 
-# We want to increase the price of all the Electronics by 10%
+-- We want to increase the price of all the Electronics by 10%
 UPDATE Products
 SET Price = Price * 1.10
 WHERE Category = 'Electronics';
@@ -220,43 +220,42 @@ WHERE Category = 'Electronics';
 SELECT * FROM Products
 WHERE Category = 'Electronics';
 
-# Temporarirly disable safe mode
+-- Temporarirly disable safe mode
 SET SQL_SAFE_UPDATES = 0;
 
-# Re-enable the SAFE MODE
+-- Re-enable the SAFE MODE
 SET SQL_SAFE_UPDATES = 1;
 
-
-# Deleting a single record
+-- Deleting a single record
 SELECT * FROM Products
 WHERE Category = 'Accessories';
 
 DELETE FROM Products
 WHERE ProductID = 1;
 
-# Delete multiple rows
+-- Delete multiple rows
 DELETE FROM Products
 WHERE Category = 'Accessories';
 
-# SQL Aggregate functions
+-- 	SQL Aggregate functions
 -- Total number of customers
 SELECT COUNT(*) AS TotalCustomers FROM Customers;
 
-# Total value of all the orders
+-- Total value of all the orders
 SELECT * FROM OrderDetails;
 
 SELECT SUM(Quantity * UnitPrice) AS TotalSales FROM OrderDetails;
 
-# Average price of the products
+-- Average price of the products
 SELECT AVG(Price) AS AveragePrice FROM Products;
 
-# Let's find the cheapest product and most expensive products
+-- Let's find the cheapest product and most expensive products
 SELECT MIN(Price) AS CheapestPrice , MAX(Price) AS MostExpensiveProducts
 FROM Products;
 
-# Using Joins
-# INNER JOIN
-# Let's find all the orders along with the customers
+-- Using Joins
+-- INNER JOIN
+-- Let's find all the orders along with the customers
 SELECT 
 	c.CustomerID,
     c.FirstName,
@@ -274,7 +273,7 @@ SELECT * FROM OrderDetails;
 -- OrderID, OrderDate -- Orders
 -- ProductID, Quantity, UnitPrice - OrderDetails
 
-# Orders + OrderDetails
+-- Orders + OrderDetails
 SELECT 
 	o.OrderID,
     o.OrderDate,
@@ -285,7 +284,7 @@ FROM Orders o
 INNER JOIN OrderDetails d
 	ON o.OrderID = d.OrderID;
     
-# Full Sales view (Orders + Products)
+-- Full Sales view (Orders + Products)
 SELECT
 	o.OrderID,
     p.ProductName,
@@ -299,8 +298,8 @@ INNER JOIN products p
 INNER JOIN Orders o
 	ON od.OrderID = o.OrderID;
     
-# ProductID, ProductName - products
-# Quantity - OrderDetails
+-- ProductID, ProductName - products
+-- Quantity - OrderDetails
 SELECT
 	p.ProductID,
     p.ProductName,
@@ -309,7 +308,7 @@ FROM Products p
 LEFT JOIN OrderDetails od
 	ON p.ProductID = od.ProductID; 
     
-# Using Group BY
+-- Using Group BY
 -- Total spending per customer
 SELECT 
 	o.CustomerID,
@@ -337,14 +336,14 @@ GROUP BY o.CustomerID, c.FirstName
 HAVING SUM(od.Quantity * od.UnitPrice) > 200;
 
 
-# best selling products
+-- best selling products
 -- Product Name - Products
 -- ProductID - OrderDetails
 -- Total Quantity - OrderDetails
 -- Total Quantity >= 5
 
-# Case When 
-# Classify the orders into (LOW, MEDIUM and HIGH)
+-- Case When 
+-- Classify the orders into (LOW, MEDIUM and HIGH)
 SELECT 
 	o.OrderID,
     SUM(od.Quantity * od.UnitPrice) AS TotalAmount,
@@ -359,7 +358,7 @@ JOIN OrderDetails od
 GROUP BY o.OrderID
 ORDER BY OrderCategory;
 
-# Classify the customers by spending
+-- Classify the customers by spending
 SELECT
 	o.CustomerID,
     SUM(od.Quantity * od.UnitPrice) AS TotalSpent,
@@ -374,7 +373,7 @@ JOIN OrderDetails od
 GROUP BY o.CustomerID
 ORDER BY CustomerSegment DESC;
 
-# Stock status
+-- Stock status
 SELECT
 	ProductName,
     Stock,
@@ -387,38 +386,257 @@ SELECT
 FROM Products
 ORDER BY StockStatus;
 
+-- Add more customers
+INSERT INTO Customers (FirstName, LastName, Email, Phone)
+VALUES
+('Esther',   'Otieno',    'esther.otieno@email.com',     '0712345678'),
+('Nancy',  'Mutheu',   'nancy.wanjiku@email.com',   '0723456789'),
+('Grace',   'Okoth',    'grace.mwangi@email.com',    '0734567890'),
+('Karen',   'Mwende',    'karen.akinyi@email.com',    '0745678901');
+
+SELECT * FROM Customers;
+
+-- Add more products
+INSERT INTO Products (ProductName, Category, Price, Stock)
+VALUES
+('Gaming Chair', 'Furniture', 250.00, 15),
+('External Hard Drive', 'Electronics', 95.00, 40),
+('Desk Organizer', 'Stationery', 8.50, 200);
+
+SELECT * FROM Products;
+
+-- Add more orders
+INSERT INTO Orders (CustomerID, Status)
+VALUES
+(1, 'Shipped'),
+(1, 'Completed'),
+(2, 'Completed'),
+(2, 'Shipped'),
+(3, 'Pending'),
+(3, 'Completed'),
+(5, 'Completed'),
+(5, 'Shipped'),
+(6, 'Completed'),
+(7, 'Completed');
+
+SELECT * FROM Orders;
+SELECT * FROM Products;
+
+-- Update orderdetails
+INSERT INTO OrderDetails (OrderID, ProductID, Quantity, UnitPrice)
+VALUES
+-- Order 11 (high-value customer)
+-- (11, 5, 1, 1200.00),
+-- (11, 2, 2, 60.00);
+
+-- Order 12 (mid-range electronics)
+(12, 2, 1, 790.00),
+(12, 5, 1, 150.00),
+
+-- Order 13 (stationery restock)
+(13, 5, 15, 3.00),
+(13, 6, 40, 1.00),
+
+-- Order 14 (home + furniture mix)
+(14, 4, 1, 215.00),
+(14, 10, 2, 46.00),
+
+-- Order 15 (low-budget order)
+(15, 9, 3, 11.00),
+
+-- Order 16 (bulk office supplies)
+(16, 6, 120, 1.00),
+
+-- Order 17 (accessories bundle)
+(17, 2, 3, 62.00),
+(17, 9, 1, 145.00),
+
+-- Order 18 (premium combo)
+(18, 5, 1, 1180.00),
+(18, 8, 1, 310.00),
+
+-- Order 19 (small mixed order)
+(19, 5, 5, 3.20),
+(19, 9, 2, 12.00);
+
+SELECT * FROM OrderDetails;
+
+-- Combined Queries
+-- UNION & UNION ALL
+-- Customers who have placed orders and those with no orders
+
+SELECT 
+	c.CustomerID,
+    c.FirstName,
+    'Has Orders' AS Status
+FROM Customers c
+JOIN Orders o
+	ON c.CustomerID = o.CustomerID
+
+UNION 
+
+SELECT 
+	c.CustomerID,
+    c.FirstName,
+    'No orders' AS Status
+FROM Customers c
+WHERE c.CustomerID NOT IN (
+	SELECT CustomerID FROM Orders
+);
 
 
+-- Completed vs Pending Orders
+-- UNION 
+SELECT 
+	OrderID,
+    Status
+FROM Orders
+WHERE Status = 'Completed'
 
+UNION 
 
+SELECT 
+	OrderID,
+    Status
+FROM Orders
+WHERE Status = 'Pending';
 
+-- Using Intersect - Only common rows
+-- Customers who have both placed orders and spent more than 1000
+SELECT CustomerID
+FROM Orders
 
+INTERSECT
 
+SELECT o.CustomerID
+FROM Orders o
+JOIN OrderDetails od
+	ON o.OrderID = od.OrderID
+GROUP BY o.CustomerID
+HAVING SUM(od.Quantity * od.UnitPrice) > 1000;
 
+-- Products in the Electronics category and have been sold
+SELECT ProductName
+FROM Products
+WHERE Category = 'Electronics'
 
+INTERSECT 
 
+SELECT p.ProductName
+FROM Products p
+JOIN OrderDetails od
+	ON p.ProductID = od.ProductID;
     
+-- Except - Return the rows from the first query that are not in the second query
+-- Products that have never been sold
+SELECT ProductName
+FROM Products;
+
+EXCEPT 
+
+SELECT p.ProductName
+FROM Products p
+JOIN OrderDetails od
+	ON p.ProductID = od.ProductID;
+
+-- Customers who have not placed any order
+SELECT FirstName, LastName
+FROM Customers
+
+EXCEPT
+
+SELECT c.FirstName, c.LastName
+FROM Customers c
+JOIN Orders o
+	ON c.CustomerID = o.CustomerID;
     
+-- Using Subqueries
+-- Frequent buyers
+SELECT FirstName, LastName
+FROM Customers
+WHERE CustomerID IN (
+	SELECT CustomerID
+    FROM Orders
+	GROUP BY CustomerID
+	HAVING COUNT(OrderID) > 2
+);
+
+
+-- Total spent per customer
+SELECT 
+	ct.CustomerID,
+    c.FirstName,
+    c.LastName,
+    ct.TotalSpent
+FROM (
+	SELECT 
+		o.CustomerID,
+        SUM(od.Quantity * od.UnitPrice) AS TotalSpent
+	FROM Orders o
+    JOIN OrderDetails od
+		ON o.OrderID = od.OrderID
+	GROUP BY o.CustomerID
+) AS ct
+JOIN Customers c
+	ON ct.CustomerID = c.CustomerID;
     
-    
-    
-    
-    
+-- Products that haven't been sold
+SELECT ProductName
+FROM Products
+WHERE ProductID NOT IN (
+	SELECT ProductID
+	FROM OrderDetails
+);
 
 
-    
+-- Products that sold in High-Value Orders
+SELECT 
+	ProductName,
+    TotalSales
+FROM Products p
+JOIN (
+	SELECT 
+		ProductID,
+		SUM(Quantity * UnitPrice) AS TotalSales
+	FROM OrderDetails
+	GROUP BY ProductID
+)AS pt
+	ON p.ProductID = pt.ProductID
+WHERE pt.TotalSales > 1000;
 
+-- Using CTEs
+-- Customers who placed more than one order
+WITH CustomerOrderCounts AS (
+	SELECT CustomerID, COUNT(OrderID) AS OrderCount
+	FROM Orders
+	GROUP BY CustomerID
+)
 
+-- Use the CTE
+SELECT c.FirstName, coc.OrderCount
+FROM Customers c
+JOIN CustomerOrderCounts coc
+ON c.CustomerID = coc.CustomerID
+WHERE coc.OrderCount > 2; 
 
+-- High Values
+WITH OrderTotals AS (
+	SELECT 
+		o.OrderID,
+        SUM(od.Quantity * od.UnitPrice) AS OrderTotals
+	FROM Orders o
+    JOIN OrderDetails od
+		ON o.OrderID = od.OrderID
+	GROUP BY o.OrderID
+),
+AvgOrder AS (
+	SELECT AVG(OrderTotals) AS AvgTotal
+    FROM OrderTotals
+)
 
-
-
-
-
-
-
-
-
-
-
-
+SELECT 
+	ot.OrderID,
+    ot.OrderTotals
+FROM OrderTotals ot
+CROSS JOIN AvgOrder ao
+WHERE ot.OrderTotals > ao.AvgTotal;
