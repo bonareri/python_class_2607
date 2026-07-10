@@ -155,32 +155,32 @@ VALUES
 
 SELECT * FROM OrderDetails;
 
--- Selecting specific columns
--- only the names and the emails
+# Selecting specific columns
+# only the names and the emails
 
 SELECT FirstName, LastName, Email FROM Customers;
 
 SELECT * FROM Customers
 WHERE Email = 'faith.akinyi@email.com';
 
--- Find the products that cost more than 
+# Find the products that cost more than 
 SELECT * FROM Products
 WHERE Price > 150;
 
--- Show the products that cost more than 500 and the stock being less than 20
+# Show the products that cost more than 500 and the stock being less than 20
 SELECT * FROM Products
 WHERE Price > 500 AND Stock < 20;
 
--- Show the products that are in the electronics and cost more than 500 or the stock is less than 20
+# Show the products that are in the electronics and cost more than 500 or the stock is less than 20
 SELECT * FROM Products
 WHERE (Category = 'Electronics' AND Price > 500) OR Stock < 20;
 
--- Order BY CLAUSE
+# Order BY CLAUSE
 -- Sorting the products by the price
 SELECT * FROM Products
 ORDER BY Price ASC;
 
--- Limiting the rows
+# Limiting the rows
 -- Show the 2 most expensive products
 SELECT * FROM Products
 ORDER BY Price DESC
@@ -190,16 +190,16 @@ SELECT * FROM Products
 ORDER BY Price ASC
 LIMIT 2;
 
--- Using DISCTINCT
+# Using DISCTINCT
 -- List all the unique products categories
 SELECT DISTINCT Category FROM Products;
 
--- Show products that are in Electronics and cost more than 500 OR the stock is less than 20 and sort this in descing order
+# Show products that are in Electronics and cost more than 500 OR the stock is less than 20 and sort this in descing order
 SELECT * FROM Products
 WHERE (Category = 'Electronics' AND Price > 500 ) OR Stock < 20
 ORDER BY Price DESC;
 
--- UPDATE 
+# UPDATE 
 SELECT * FROM Customers;
 
 -- Updating a customer's phone number
@@ -207,12 +207,12 @@ UPDATE Customers
 SET Phone = '0722222233'
 WHERE CustomerID = 2;
 
--- Updating multiple columns
+# Updating multiple columns
 UPDATE Customers
 SET FirstName = 'Melody', Email = 'melodybonareri@gmail.com'
 WHERE CustomerID = 2;
 
--- We want to increase the price of all the Electronics by 10%
+# We want to increase the price of all the Electronics by 10%
 UPDATE Products
 SET Price = Price * 1.10
 WHERE Category = 'Electronics';
@@ -220,42 +220,43 @@ WHERE Category = 'Electronics';
 SELECT * FROM Products
 WHERE Category = 'Electronics';
 
--- Temporarirly disable safe mode
+# Temporarirly disable safe mode
 SET SQL_SAFE_UPDATES = 0;
 
--- Re-enable the SAFE MODE
+# Re-enable the SAFE MODE
 SET SQL_SAFE_UPDATES = 1;
 
--- Deleting a single record
+
+# Deleting a single record
 SELECT * FROM Products
 WHERE Category = 'Accessories';
 
 DELETE FROM Products
 WHERE ProductID = 1;
 
--- Delete multiple rows
+# Delete multiple rows
 DELETE FROM Products
 WHERE Category = 'Accessories';
 
--- 	SQL Aggregate functions
+# SQL Aggregate functions
 -- Total number of customers
 SELECT COUNT(*) AS TotalCustomers FROM Customers;
 
--- Total value of all the orders
+# Total value of all the orders
 SELECT * FROM OrderDetails;
 
 SELECT SUM(Quantity * UnitPrice) AS TotalSales FROM OrderDetails;
 
--- Average price of the products
+# Average price of the products
 SELECT AVG(Price) AS AveragePrice FROM Products;
 
--- Let's find the cheapest product and most expensive products
+# Let's find the cheapest product and most expensive products
 SELECT MIN(Price) AS CheapestPrice , MAX(Price) AS MostExpensiveProducts
 FROM Products;
 
--- Using Joins
--- INNER JOIN
--- Let's find all the orders along with the customers
+# Using Joins
+# INNER JOIN
+# Let's find all the orders along with the customers
 SELECT 
 	c.CustomerID,
     c.FirstName,
@@ -273,7 +274,7 @@ SELECT * FROM OrderDetails;
 -- OrderID, OrderDate -- Orders
 -- ProductID, Quantity, UnitPrice - OrderDetails
 
--- Orders + OrderDetails
+# Orders + OrderDetails
 SELECT 
 	o.OrderID,
     o.OrderDate,
@@ -284,7 +285,7 @@ FROM Orders o
 INNER JOIN OrderDetails d
 	ON o.OrderID = d.OrderID;
     
--- Full Sales view (Orders + Products)
+# Full Sales view (Orders + Products)
 SELECT
 	o.OrderID,
     p.ProductName,
@@ -298,8 +299,8 @@ INNER JOIN products p
 INNER JOIN Orders o
 	ON od.OrderID = o.OrderID;
     
--- ProductID, ProductName - products
--- Quantity - OrderDetails
+# ProductID, ProductName - products
+# Quantity - OrderDetails
 SELECT
 	p.ProductID,
     p.ProductName,
@@ -308,7 +309,7 @@ FROM Products p
 LEFT JOIN OrderDetails od
 	ON p.ProductID = od.ProductID; 
     
--- Using Group BY
+# Using Group BY
 -- Total spending per customer
 SELECT 
 	o.CustomerID,
@@ -336,14 +337,14 @@ GROUP BY o.CustomerID, c.FirstName
 HAVING SUM(od.Quantity * od.UnitPrice) > 200;
 
 
--- best selling products
+# best selling products
 -- Product Name - Products
 -- ProductID - OrderDetails
 -- Total Quantity - OrderDetails
 -- Total Quantity >= 5
 
--- Case When 
--- Classify the orders into (LOW, MEDIUM and HIGH)
+# Case When 
+# Classify the orders into (LOW, MEDIUM and HIGH)
 SELECT 
 	o.OrderID,
     SUM(od.Quantity * od.UnitPrice) AS TotalAmount,
@@ -358,7 +359,7 @@ JOIN OrderDetails od
 GROUP BY o.OrderID
 ORDER BY OrderCategory;
 
--- Classify the customers by spending
+# Classify the customers by spending
 SELECT
 	o.CustomerID,
     SUM(od.Quantity * od.UnitPrice) AS TotalSpent,
@@ -373,7 +374,7 @@ JOIN OrderDetails od
 GROUP BY o.CustomerID
 ORDER BY CustomerSegment DESC;
 
--- Stock status
+# Stock status
 SELECT
 	ProductName,
     Stock,
@@ -461,8 +462,8 @@ VALUES
 
 SELECT * FROM OrderDetails;
 
--- Combined Queries
--- UNION & UNION ALL
+# Combined Queries
+# UNION & UNION ALL
 -- Customers who have placed orders and those with no orders
 
 SELECT 
@@ -485,7 +486,7 @@ WHERE c.CustomerID NOT IN (
 );
 
 
--- Completed vs Pending Orders
+# Completed vs Pending Orders
 -- UNION 
 SELECT 
 	OrderID,
@@ -501,7 +502,7 @@ SELECT
 FROM Orders
 WHERE Status = 'Pending';
 
--- Using Intersect - Only common rows
+# Using Intersect - Only common rows
 -- Customers who have both placed orders and spent more than 1000
 SELECT CustomerID
 FROM Orders
@@ -515,7 +516,7 @@ JOIN OrderDetails od
 GROUP BY o.CustomerID
 HAVING SUM(od.Quantity * od.UnitPrice) > 1000;
 
--- Products in the Electronics category and have been sold
+# Products in the Electronics category and have been sold
 SELECT ProductName
 FROM Products
 WHERE Category = 'Electronics'
@@ -527,7 +528,7 @@ FROM Products p
 JOIN OrderDetails od
 	ON p.ProductID = od.ProductID;
     
--- Except - Return the rows from the first query that are not in the second query
+# Except - Return the rows from the first query that are not in the second query
 -- Products that have never been sold
 SELECT ProductName
 FROM Products;
@@ -539,7 +540,7 @@ FROM Products p
 JOIN OrderDetails od
 	ON p.ProductID = od.ProductID;
 
--- Customers who have not placed any order
+# Customers who have not placed any order
 SELECT FirstName, LastName
 FROM Customers
 
@@ -550,8 +551,8 @@ FROM Customers c
 JOIN Orders o
 	ON c.CustomerID = o.CustomerID;
     
--- Using Subqueries
--- Frequent buyers
+# Using Subqueries
+# Frequent buyers
 SELECT FirstName, LastName
 FROM Customers
 WHERE CustomerID IN (
@@ -589,7 +590,7 @@ WHERE ProductID NOT IN (
 );
 
 
--- Products that sold in High-Value Orders
+# Products that sold in High-Value Orders
 SELECT 
 	ProductName,
     TotalSales
@@ -604,7 +605,7 @@ JOIN (
 	ON p.ProductID = pt.ProductID
 WHERE pt.TotalSales > 1000;
 
--- Using CTEs
+# Using CTEs
 -- Customers who placed more than one order
 WITH CustomerOrderCounts AS (
 	SELECT CustomerID, COUNT(OrderID) AS OrderCount
@@ -612,7 +613,7 @@ WITH CustomerOrderCounts AS (
 	GROUP BY CustomerID
 )
 
--- Use the CTE
+# Use the CTE
 SELECT c.FirstName, coc.OrderCount
 FROM Customers c
 JOIN CustomerOrderCounts coc
@@ -640,3 +641,257 @@ SELECT
 FROM OrderTotals ot
 CROSS JOIN AvgOrder ao
 WHERE ot.OrderTotals > ao.AvgTotal;
+
+# Top products by Sales
+-- products with total sales above 500
+WITH ProductSales AS (
+	SELECT ProductID, SUM(Quantity * UnitPrice) AS TotalSales
+    FROM OrderDetails
+	GROUP BY ProductID
+)
+
+-- using the CTE
+SELECT p.ProductName, ps.TotalSales
+FROM Products p
+JOIN ProductSales ps
+ON p.ProductID = ps.ProductID
+WHERE ps.TotalSales > 500;
+
+-- Window Functions
+-- Calculate Total spending per customer using SUM ()
+SELECT 
+	o.CustomerID,
+    o.OrderID,
+    ot.OrderTotal,
+    SUM(ot.OrderTotal) OVER (PARTITION BY o.CustomerID) AS TotalSpent
+FROM Orders o
+JOIN (
+	SELECT OrderID, SUM(Quantity * UnitPrice) AS OrderTotal
+	FROM OrderDetails 
+    GROUP BY OrderID
+) ot
+	ON o.OrderID = ot.OrderID;
+    
+# Rank customers by spending
+SELECT 
+	CustomerID,
+    TotalSpent,
+    RANK() OVER (ORDER BY TotalSpent DESC) AS SpendingRank
+FROM (
+	SELECT 
+		o.CustomerID,
+        SUM(od.Quantity * od.UnitPrice) AS TotalSpent
+	FROM Orders o
+    JOIN OrderDetails od
+		ON o.OrderID = od.OrderID
+	GROUP BY o.CustomerID
+) AS CustomerTotals;
+
+# Find the most expensive Product in each order using ROW_NUMBER()
+SELECT 
+	OrderID,
+    ProductID,
+    UnitPrice,
+    ROW_NUMBER() OVER(PARTITION BY OrderID ORDER BY UnitPrice DESC) AS RankByPrice
+FROM OrderDetails;
+    
+    
+-- Views in SQL 
+
+-- Create a sales Trend View
+CREATE VIEW Sales_Running_Total AS 
+SELECT 
+	DATE(o.OrderDate) AS OrderDay,
+    SUM(od.Quantity * od.UnitPrice) AS DailySales,
+    SUM(SUM(od.Quantity * od.UnitPrice))
+		OVER(ORDER BY DATE(o.OrderDate)) AS RunningTotalSales
+FROM Orders o
+JOIN OrderDetails od 
+	ON o.OrderID = od.OrderID
+WHERE o.Status <> 'Cancelled'
+GROUP BY DATE( o.OrderDate);
+
+SELECT * FROM Sales_Running_Total;
+
+# Turn into a view
+CREATE VIEW Total_Customer_Spending AS 
+SELECT 
+	o.OrderID,
+    o.CustomerID,
+    SUM(od.Quantity * od.UnitPrice) 
+		OVER (PARTITION BY o.CustomerID) AS TotalCustomerSpending
+FROM Orders o
+JOIN OrderDetails od 
+	ON o.OrderID = od.OrderID;
+    
+SELECT * FROM Total_Customer_Spending;
+
+-- Rank Orders by value within each customer
+SELECT 
+	o.OrderID,
+    o.CustomerID,
+    SUM(od.Quantity * od.UnitPrice) AS OrderValue, 
+    RANK() OVER (PARTITION BY o.CustomerID
+				ORDER BY  SUM(od.Quantity * od.UnitPrice) DESC
+                ) AS OrderRank
+FROM Orders o
+JOIN OrderDetails od
+	ON o.OrderID = od.OrderID
+GROUP BY o.CustomerID, o.OrderID;
+
+-- Turn into a view
+-- CREATE VIEW Customer_Order_Ranking AS
+SELECT 
+	o.OrderID,
+    o.CustomerID,
+    SUM(od.Quantity * od.UnitPrice) AS OrderValue, 
+    RANK() OVER (PARTITION BY o.CustomerID
+				ORDER BY SUM(od.Quantity * od.UnitPrice) DESC
+                ) AS OrderRank
+FROM Orders o
+JOIN OrderDetails od
+	ON o.OrderID = od.OrderID
+GROUP BY o.CustomerID, o.OrderID;
+
+SELECT * FROM Customer_Order_Ranking;
+
+# Triggers
+-- Create a Trigger to upadte stock
+
+DELIMITER //
+CREATE TRIGGER Reduce_Stock_After_Order
+AFTER INSERT ON OrderDetails
+FOR EACH ROW
+BEGIN
+	UPDATE Products
+	SET Stock = Stock - NEW.Quantity
+	WHERE ProductID = NEW.ProductID;
+END;
+//
+
+DELIMITER ;
+
+# Test the Trigger
+SELECT * FROM Products;
+
+SELECT * FROM Orders;
+
+SELECT * FROM Customers;
+
+SELECT * FROM OrderDetails;
+
+INSERT INTO Orders(CustomerID, Status)
+VALUES
+(2, 'Completed');
+
+INSERT INTO OrderDetails(OrderID, ProductID, Quantity, UnitPrice)
+VALUES
+(20, 6, 100, 1.15);
+
+# Create a Trigger to Log Deleted Orders
+CREATE TABLE DeletedOrderLog (
+	LogID INT PRIMARY KEY AUTO_INCREMENT,
+	OrderID INT,
+    ProductID INT,
+    Quantity INT,
+    UnitPrice DECIMAL (10, 2),
+    DeletedAT DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
+DELIMITER //
+
+CREATE TRIGGER Log_Deleted_Orders
+BEFORE DELETE ON Orders
+FOR EACH ROW
+BEGIN
+	INSERT INTO DeletedOrderLog( OrderID, ProductID, Quantity, UnitPrice)
+    SELECT 
+		od.OrderID, 
+		od.ProductID,
+        od.Quantity,
+        od.UnitPrice
+	FROM OrderDetails od
+    WHERE od.OrderID = OLD.OrderID;
+END //
+
+DELIMITER ;
+
+-- Test the Trigger
+-- Delete an Order 
+
+SELECT * FROM Orders;
+
+DELETE FROM Orders 
+WHERE OrderID = 3;
+
+SELECT * FROM DeletedOrderLog;
+
+
+# Using Stored Procedures
+
+
+DELIMITER $$
+
+CREATE PROCEDURE AddCustomer(
+	IN p_FirstName VARCHAR(50),
+	IN p_LastName VARCHAR(50),
+    IN p_Email VARCHAR(100),
+    IN p_Phone VARCHAR(20)
+)
+BEGIN
+	INSERT INTO Customers(FirstName, LastName, Email, Phone)
+    VALUES (p_FirstName, p_LastName, p_Email, p_Phone);
+END $$
+
+DELIMITER ;
+
+-- Using the Stored Procedure
+SELECT * FROM Customers;
+
+CALL AddCustomer('Dave', 'Gituma', 'davegituma@gmail.com', 0726125096);
+
+# Procedure to update the stock
+DELIMITER $$
+
+CREATE PROCEDURE UpdateStock(
+	IN p_ProductID INT,
+	IN p_AdditionalStock INT
+)
+BEGIN
+	Update Products
+    SET Stock = Stock + p_AdditionalStock
+	WHERE ProductID = p_ProductID ;
+END $$
+
+DELIMITER ;
+
+SELECT * FROM Products;
+
+CALL UpdateStock(2, 10);
+
+-- Stored Procedure to calculate the Total Spending per Customer
+
+DELIMITER $$
+
+CREATE PROCEDURE TotalSpending(
+	IN p_CustomerID INT
+)
+BEGIN
+	SELECT 
+		c.FirstName,
+        c.LastName,
+        SUM(od.Quantity * od.UnitPrice) AS TotalSpent
+	FROM Customers c
+    JOIN Orders o
+		ON c.CustomerID = o.CustomerID
+	JOIN OrderDetails od
+		ON o.OrderID = od.OrderID
+	WHERE c.CustomerID = p_CustomerID
+	GROUP BY c.FirstName, c.LastName;
+
+END $$
+DELIMITER ;
+
+DROP PROCEDURE TotalSpending;
+
+CALL TotalSpending(5);
